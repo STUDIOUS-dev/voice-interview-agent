@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "question": "What is the difference between a list and a tuple in Python, and when would you choose one over the other?",
+    "ideal_answer": "Lists are mutable sequences that can be modified after creation (append, remove, etc.), while tuples are immutable and cannot be changed once created. Tuples are preferred for fixed collections of heterogeneous data (like a coordinate pair or a record) because they are hashable, slightly faster, and signal to readers that the data should not change. Lists are preferred when the collection needs to grow, shrink, or be reordered at runtime."
+  },
+  {
+    "id": 2,
+    "question": "Can you explain what decorators are in Python and describe a real-world use case for them?",
+    "ideal_answer": "A decorator is a callable that takes a function as input and returns a modified version of that function, allowing you to wrap additional behavior around it without modifying its source code. Common real-world uses include logging (recording when a function is called), authentication checks (verifying a user is logged in before executing a view), caching with @lru_cache (memoizing expensive function results), and timing execution for performance monitoring. Decorators rely on Python treating functions as first-class objects."
+  },
+  {
+    "id": 3,
+    "question": "What is an ORM and what are the main advantages and disadvantages of using one in a backend application?",
+    "ideal_answer": "An ORM (Object-Relational Mapper) is a library that maps database tables to Python classes, allowing you to interact with the database using Python objects and methods instead of raw SQL. Advantages include faster development, database portability, and built-in protection against SQL injection. Disadvantages include performance overhead for complex queries (the ORM may generate inefficient SQL), a learning curve for the abstraction layer, and reduced control for fine-tuned optimizations that raw SQL would allow."
+  },
+  {
+    "id": 4,
+    "question": "How does exception handling work in Python? Explain try, except, else, and finally with an example use case.",
+    "ideal_answer": "In Python, the try block contains code that might raise an exception; the except block catches specific exception types and handles them; the else block runs only if no exception was raised in try; and finally always executes regardless of whether an exception occurred, making it ideal for cleanup like closing files or database connections. For example, when opening a file you'd put the read operation in try, handle FileNotFoundError in except, process the data in else, and close the file handle in finally. Using specific exception types rather than a bare except is best practice."
+  },
+  {
+    "id": 5,
+    "question": "What is the purpose of the __init__ method in a Python class, and how does it differ from __new__?",
+    "ideal_answer": "The __init__ method is the initializer called immediately after an instance is created; it sets up the instance's initial state by assigning attributes and is where you put setup logic. It receives the already-created instance as self. The __new__ method is the actual constructor that creates and returns the new instance before __init__ is called, and is rarely overridden unless you need to control instance creation itself (e.g., for singletons or immutable types like tuple subclasses). In everyday Python, you only need __init__."
+  },
+  {
+    "id": 6,
+    "question": "What is the difference between a generator and a regular iterator in Python? When would you use the yield keyword?",
+    "ideal_answer": "A regular iterator is any object implementing __iter__ and __next__, typically written as a full class. A generator is a simpler way to create iterators using a function with the yield keyword — when called, it returns a generator object that produces values lazily, one at a time, pausing execution between yields. Generators are ideal when working with large datasets or infinite sequences because they compute values on demand without storing the entire sequence in memory, making them far more memory-efficient than building a list."
+  },
+  {
+    "id": 7,
+    "question": "What does idempotency mean in the context of REST API design, and which HTTP methods should be idempotent?",
+    "ideal_answer": "Idempotency means that making the same request multiple times produces the same result as making it once — the system ends up in the same state regardless of how many times the operation is repeated. GET, PUT, DELETE, and HEAD should be idempotent: deleting a resource that is already deleted should return 404 or 204, not an error. POST is typically not idempotent because repeating it usually creates multiple resources. Designing idempotent endpoints is critical for reliability because clients can safely retry failed requests without causing duplicate side effects."
+  }
+]
