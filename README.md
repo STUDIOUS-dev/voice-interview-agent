@@ -44,7 +44,7 @@ The Voice Interview Agent conducts fully automated technical screening interview
 
 **Step 1 — Clone the repository**
 ```bash
-git clone https://github.com/your-username/voice-interview-agent.git
+git clone https://github.com/STUDIOUS-dev/voice-interview-agent.git
 cd voice-interview-agent
 ```
 
@@ -114,7 +114,7 @@ This runs all tests in the `tests/` directory:
 - **`test_dataset.py`** — validates `qa_dataset.json` schema (5 tests, no API calls)
 - **`test_evaluator.py`** — validates evaluation logic with mocked LLM (4 tests, no API calls)
 
-All tests run offline — no OpenAI API key required.
+All tests run offline — no API key required.
 
 ---
 
@@ -126,16 +126,17 @@ All tests run offline — no OpenAI API key required.
 ├── .gitignore
 ├── README.md
 ├── requirements.txt
-├── Architecture_Note.md      # Deep technical architecture analysis
-├── qa_dataset.json           # 7 interview questions (human-editable)
+├── Architecture_Note.md      # Technical architecture analysis (retrieval, LLM grounding, latency)
+├── qa_dataset.json           # 7 interview questions with ideal answers
 ├── main.py                   # CLI entry point + state machine orchestrator
 ├── config.py                 # Loads .env, exposes typed Settings dataclass
 ├── modules/
 │   ├── __init__.py
-│   ├── stt.py                # Speech-to-text: mic capture + Whisper API
-│   ├── tts.py                # Text-to-speech: OpenAI TTS + pydub playback
-│   ├── evaluator.py          # LLM evaluation with structured JSON output
+│   ├── stt.py                # Speech-to-text via Google Speech Recognition (free)
+│   ├── tts.py                # Text-to-speech via gTTS + pydub playback
+│   ├── evaluator.py          # LLM evaluation with structured JSON output (Gemini)
 │   ├── feedback.py           # Final report generation + save to file
+│   ├── ffmpeg_check.py       # Proactive FFmpeg detection at startup
 │   ├── translator.py         # Batch question translation for non-English sessions
 │   └── state.py              # InterviewState dataclass — shared session state
 └── tests/
@@ -151,7 +152,7 @@ All tests run offline — no OpenAI API key required.
 Standard RAG retrieves context based on the user's query — it's user-driven. An interviewer agent is agent-driven: the interviewer decides which question to ask next, not the candidate. A sequential index into `qa_dataset.json` guarantees the agent never loses its place and always has the correct ideal_answer in context without any similarity search overhead.
 
 ### Why structured JSON output schema?
-The `response_format: json_schema` on GPT-4o enforces that the model returns exactly the fields we need — no parsing heuristics, no regex extraction. The `follow_up_reason` field acts as a hidden chain-of-thought: by forcing the model to articulate why it's asking a follow-up before generating the reply, the quality of follow-up questions improves significantly.
+Gemini's `response_mime_type: application/json` with `response_schema` enforces that the model returns exactly the fields we need — no parsing heuristics, no regex extraction. The `follow_up_reason` field acts as a hidden chain-of-thought: by forcing the model to articulate why it's asking a follow-up before generating the reply, the quality of follow-up questions improves significantly.
 
 ### Why batch translation at session start?
 Translating per-question at runtime would add ~1s latency before every question. Batch translation at startup costs one API call and stores the results in memory for the session duration. If translation fails, the session falls back to English silently — the interview always continues.
@@ -160,7 +161,7 @@ Translating per-question at runtime would add ~1s latency before every question.
 Recruiter reports need to be consistent across multilingual sessions. A recruiter reviewing a Hindi interview should receive the same feedback format as for an English interview. Forcing `private_feedback` to English in the system prompt ensures HR records remain standardised.
 
 ### Why does `--mode text` exist?
-Text mode (`--mode text`) allows the system to be fully tested in CI environments without microphone hardware, and lets developers iterate on the evaluation logic without incurring audio API costs. It also makes the agent accessible in environments where audio is impractical.
+Text mode (`--mode text`) allows the system to be fully tested in CI environments without microphone hardware, and lets developers iterate on the evaluation logic without audio setup. It also makes the agent accessible in environments where audio is impractical.
 
 ---
 
@@ -183,11 +184,11 @@ Edit `qa_dataset.json` to add, remove, or modify questions. No code changes requ
 | Component | Service | Approx. Cost |
 |-----------|---------|-------------|
 | **STT (Speech-to-Text)** | Google Speech Recognition (free) | **$0.00** |
-| **LLM (Evaluation + Feedback)** | Google Gemini 2.0 Flash (free tier: 15 RPM, 1M tokens/day) | **$0.00** on free tier |
+| **LLM (Evaluation + Feedback)** | Google Gemini Flash (free tier: 15 RPM, 1M tokens/day) | **$0.00** on free tier |
 | **TTS (Text-to-Speech)** | gTTS — Google Translate TTS (free) | **$0.00** |
 | **Total** | | **$0.00** (free tier) |
 
 > The free tier of Google AI Studio (Gemini) is sufficient for development and demos.
-> For production at scale, Gemini 2.0 Flash is priced at ~$0.075 per 1M input tokens.
+> For production at scale, Gemini Flash is priced at ~$0.075 per 1M input tokens.
 
 Costs vary based on answer length and number of follow-ups.
