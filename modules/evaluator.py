@@ -10,7 +10,7 @@ _SAFE_DEFAULT = {
     "spoken_reply": "Thank you for your answer. Let's move on.",
     "move_to_next": True,
     "candidate_score": 3,
-    "private_feedback": "Evaluation failed — manual review needed.",
+    "private_feedback": "Evaluation failed - manual review needed.",
     "follow_up_reason": "",
 }
 
@@ -51,7 +51,7 @@ def _build_system_prompt(state: InterviewState) -> str:
         f"4. If their answer is completely incorrect or off-topic: gently correct "
         f"   them in one sentence, then set move_to_next to true.\n"
         f"5. NEVER reveal the exact wording of the ideal answer.\n"
-        f"6. Keep spoken_reply under 3 sentences — concise, not verbose.\n"
+        f"6. Keep spoken_reply under 3 sentences - concise, not verbose.\n"
         f"7. Score the candidate from 1 to 5 based on their BEST response across "
         f"   all follow-ups for this question (5 = covered all key points, "
         f"   1 = no relevant content).\n"
@@ -174,6 +174,6 @@ def handle_silence(
         state.feedback_log.append({
             "question": state.current_question["question"],
             "score": 1,
-            "notes": "Candidate did not respond — potential technical issue or no answer provided.",
+            "notes": "Candidate did not respond - potential technical issue or no answer provided.",
         })
         return True

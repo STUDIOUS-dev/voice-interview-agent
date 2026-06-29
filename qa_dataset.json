@@ -27,11 +27,11 @@
   {
     "id": 6,
     "question": "What is the difference between a generator and a regular iterator in Python? When would you use the yield keyword?",
-    "ideal_answer": "A regular iterator is any object implementing __iter__ and __next__, typically written as a full class. A generator is a simpler way to create iterators using a function with the yield keyword — when called, it returns a generator object that produces values lazily, one at a time, pausing execution between yields. Generators are ideal when working with large datasets or infinite sequences because they compute values on demand without storing the entire sequence in memory, making them far more memory-efficient than building a list."
+    "ideal_answer": "A regular iterator is any object implementing __iter__ and __next__, typically written as a full class. A generator is a simpler way to create iterators using a function with the yield keyword - when called, it returns a generator object that produces values lazily, one at a time, pausing execution between yields. Generators are ideal when working with large datasets or infinite sequences because they compute values on demand without storing the entire sequence in memory, making them far more memory-efficient than building a list."
   },
   {
     "id": 7,
     "question": "What does idempotency mean in the context of REST API design, and which HTTP methods should be idempotent?",
-    "ideal_answer": "Idempotency means that making the same request multiple times produces the same result as making it once — the system ends up in the same state regardless of how many times the operation is repeated. GET, PUT, DELETE, and HEAD should be idempotent: deleting a resource that is already deleted should return 404 or 204, not an error. POST is typically not idempotent because repeating it usually creates multiple resources. Designing idempotent endpoints is critical for reliability because clients can safely retry failed requests without causing duplicate side effects."
+    "ideal_answer": "Idempotency means that making the same request multiple times produces the same result as making it once - the system ends up in the same state regardless of how many times the operation is repeated. GET, PUT, DELETE, and HEAD should be idempotent: deleting a resource that is already deleted should return 404 or 204, not an error. POST is typically not idempotent because repeating it usually creates multiple resources. Designing idempotent endpoints is critical for reliability because clients can safely retry failed requests without causing duplicate side effects."
   }
 ]

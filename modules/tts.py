@@ -18,7 +18,7 @@ def speak(text: str, settings, tts_lang: str = "en", bypass_audio: bool = False)
             tts = gTTS(text=text, lang=tts_lang, slow=False)
             tts.save(temp_path)
         except Exception as e:
-            print(f"[gTTS synthesis error: {e}. Skipping audio playback — text shown above.]")
+            print(f"[gTTS synthesis error: {e}. Skipping audio playback - text shown above.]")
             return
 
         try:
@@ -28,7 +28,7 @@ def speak(text: str, settings, tts_lang: str = "en", bypass_audio: bool = False)
         except Exception as e:
             
             
-            print(f"[Audio playback error: {e}. Skipping audio — text shown above.]")  # noqa: BLE001
+            print(f"[Audio playback error: {e}. Skipping audio - text shown above.]")  # noqa: BLE001
 
     finally:
         if os.path.exists(temp_path):

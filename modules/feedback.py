@@ -77,7 +77,7 @@ def save_report(
     SEP = "=" * 60
     header = (
         SEP + "\n"
-        + "  VOICE INTERVIEW AGENT — EVALUATION REPORT\n"
+        + "  VOICE INTERVIEW AGENT - EVALUATION REPORT\n"
         + SEP + "\n"
         + f"  Interview Language : {language}\n"
         + f"  Generated At       : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"

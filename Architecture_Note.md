@@ -8,9 +8,9 @@
 
 ### Why RAG is the Wrong Pattern Here
 
-Retrieval-Augmented Generation (RAG) is designed for user-initiated queries: the user asks something, and the system retrieves relevant context to answer it. This model is fundamentally user-driven — the retrieval is triggered by and grounded in the user's input.
+Retrieval-Augmented Generation (RAG) is designed for user-initiated queries: the user asks something, and the system retrieves relevant context to answer it. This model is fundamentally user-driven - the retrieval is triggered by and grounded in the user's input.
 
-An interviewer agent operates on the opposite paradigm: **the agent decides what comes next, not the candidate.** The agent must ask a specific question, retain the ideal answer for grading, and track exactly where in the interview it is. If we used RAG, there is no guarantee the correct question would be retrieved — similarity search might surface a different question if the candidate's answer accidentally resembles the topic of question 3 while the agent is on question 2.
+An interviewer agent operates on the opposite paradigm: **the agent decides what comes next, not the candidate.** The agent must ask a specific question, retain the ideal answer for grading, and track exactly where in the interview it is. If we used RAG, there is no guarantee the correct question would be retrieved - similarity search might surface a different question if the candidate's answer accidentally resembles the topic of question 3 while the agent is on question 2.
 
 ### The State-Driven Approach
 
@@ -31,7 +31,7 @@ At each turn, `state.current_question` holds the exact question dict from the da
 **This guarantees:**
 - The agent never loses its place in the interview.
 - The ideal answer in context is always correct for the current question.
-- No semantic search overhead — O(1) retrieval by index.
+- No semantic search overhead - O(1) retrieval by index.
 - The dataset is fully human-editable: add/remove/modify questions without touching code.
 
 ---
@@ -83,7 +83,7 @@ With strict JSON schema enforcement, the model's output is guaranteed to be pars
 
 The system uses a three-layer approach to support English, Hindi, and German interviews.
 
-### Layer 1 — Speech-to-Text (Google Speech Recognition)
+### Layer 1 - Speech-to-Text (Google Speech Recognition)
 
 ```
 Candidate speaks in Hindi → Google SR receives language="hi-IN" explicitly
@@ -93,7 +93,7 @@ Passing the BCP-47 language code explicitly prevents two problems:
 1. **Misdetection:** Short technical answers (1-2 sentences) may be ambiguous to auto-detect. Explicit language prevents the recognizer from misidentifying Hindi as Bengali or German as Dutch.
 2. **Technical term accuracy:** Words like "Python", "ORM", "REST", and "API" appear in all three languages unchanged. The recognizer handles these correctly when the language context is set.
 
-### Layer 2 — LLM Evaluation (Google Gemini)
+### Layer 2 - LLM Evaluation (Google Gemini)
 
 ```
 System prompt: "Evaluate logic in English internally.
@@ -105,7 +105,7 @@ The critical design decision here is that **`ideal_answer` is always in English*
 1. **Translation loss:** Technical nuances in ideal answers may not translate accurately. An ideal answer about Python generators that is translated to Hindi and then re-evaluated against a Hindi candidate response introduces two layers of potential semantic drift.
 2. **Grading inconsistency:** The same answer in Hindi and English should receive the same score. Keeping the grading rubric in English and instructing the LLM to evaluate against it in English before responding in the target language ensures consistent scoring.
 
-### Layer 3 — Text-to-Speech (gTTS)
+### Layer 3 - Text-to-Speech (gTTS)
 
 ```
 TTS input: Hindi text → gTTS(lang="hi") → MP3 → pydub playback
@@ -119,9 +119,9 @@ Questions are translated **once at session start** in a single batch Gemini call
 - For English sessions: zero API calls (passthrough, O(0) cost).
 - For non-English: one call translates all N questions.
 - Translated strings are cached in `state.translated_questions` for the session.
-- `ideal_answer` fields are **never translated** — they remain in English in all sessions.
+- `ideal_answer` fields are **never translated** - they remain in English in all sessions.
 - Technical terms (ORM, REST, API, Python, decorator, generator) are explicitly instructed to remain in English within the translated questions.
-- Parse failure triggers a silent English fallback — the interview always continues.
+- Parse failure triggers a silent English fallback - the interview always continues.
 
 ---
 

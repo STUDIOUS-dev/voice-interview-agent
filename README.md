@@ -1,6 +1,6 @@
 # Voice Interview Agent
 
-> AI-powered voice screening that interviews candidates — so you don't have to.
+> AI-powered voice screening that interviews candidates - so you don't have to.
 
 ---
 
@@ -8,9 +8,6 @@
 
 The Voice Interview Agent conducts fully automated technical screening interviews via voice. The candidate speaks their answers aloud; Google Speech Recognition (free, no key) transcribes the speech in real time; Google Gemini evaluates the response against a predefined ideal answer and decides whether to ask a follow-up or advance; and gTTS (Google Text-to-Speech, free) speaks the interviewer's reply back to the candidate. At the end of the session, a structured recruiter report is generated automatically and saved to disk.
 
-## Demo
-
-> [Insert Loom link here]
 
 ---
 
@@ -27,8 +24,8 @@ The Voice Interview Agent conducts fully automated technical screening interview
   | Ubuntu / Debian | `sudo apt install ffmpeg` |
   | Windows  | Download from [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html) and add `bin/` to your system PATH |
 
-- **Google API key** (for Gemini only) — get a **free** key at [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
-  - No billing required — Google AI Studio has a generous free tier
+- **Google API key** (for Gemini only) - get a **free** key at [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+  - No billing required - Google AI Studio has a generous free tier
   - Speech Recognition (STT) and gTTS (TTS) are **completely free** with no key needed
 
 > **Note for Windows PyAudio users:** If `pip install PyAudio` fails, try:
@@ -42,13 +39,13 @@ The Voice Interview Agent conducts fully automated technical screening interview
 
 ### Installation Steps
 
-**Step 1 — Clone the repository**
+**Step 1 - Clone the repository**
 ```bash
 git clone https://github.com/STUDIOUS-dev/voice-interview-agent.git
 cd voice-interview-agent
 ```
 
-**Step 2 — Create and activate a virtual environment**
+**Step 2 - Create and activate a virtual environment**
 ```bash
 # Mac / Linux
 python3.11 -m venv venv
@@ -59,19 +56,19 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-**Step 3 — Install Python dependencies**
+**Step 3 - Install Python dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-**Step 4 — Configure your Google API key**
+**Step 4 - Configure your Google API key**
 ```bash
 cp .env.example .env
 # Open .env and replace the placeholder with your free Gemini key from:
 # https://aistudio.google.com/app/apikey
 ```
 
-**Step 5 — Run the agent**
+**Step 5 - Run the agent**
 ```bash
 python main.py --lang English
 ```
@@ -111,10 +108,10 @@ python -m unittest discover tests
 ```
 
 This runs all tests in the `tests/` directory:
-- **`test_dataset.py`** — validates `qa_dataset.json` schema (5 tests, no API calls)
-- **`test_evaluator.py`** — validates evaluation logic with mocked LLM (4 tests, no API calls)
+- **`test_dataset.py`** - validates `qa_dataset.json` schema (5 tests, no API calls)
+- **`test_evaluator.py`** - validates evaluation logic with mocked LLM (4 tests, no API calls)
 
-All tests run offline — no API key required.
+All tests run offline - no API key required.
 
 ---
 
@@ -122,7 +119,7 @@ All tests run offline — no API key required.
 
 ```
 /voice-interview-agent
-├── .env.example              # API key placeholder — never commit .env
+├── .env.example              # API key placeholder - never commit .env
 ├── .gitignore
 ├── README.md
 ├── requirements.txt
@@ -138,7 +135,7 @@ All tests run offline — no API key required.
 │   ├── feedback.py           # Final report generation + save to file
 │   ├── ffmpeg_check.py       # Proactive FFmpeg detection at startup
 │   ├── translator.py         # Batch question translation for non-English sessions
-│   └── state.py              # InterviewState dataclass — shared session state
+│   └── state.py              # InterviewState dataclass - shared session state
 └── tests/
     ├── test_evaluator.py     # Mock LLM tests for evaluation logic
     └── test_dataset.py       # Schema validation for qa_dataset.json
@@ -149,13 +146,13 @@ All tests run offline — no API key required.
 ## Key Design Decisions
 
 ### Why state-driven sequential retrieval (not RAG)?
-Standard RAG retrieves context based on the user's query — it's user-driven. An interviewer agent is agent-driven: the interviewer decides which question to ask next, not the candidate. A sequential index into `qa_dataset.json` guarantees the agent never loses its place and always has the correct ideal_answer in context without any similarity search overhead.
+Standard RAG retrieves context based on the user's query - it's user-driven. An interviewer agent is agent-driven: the interviewer decides which question to ask next, not the candidate. A sequential index into `qa_dataset.json` guarantees the agent never loses its place and always has the correct ideal_answer in context without any similarity search overhead.
 
 ### Why structured JSON output schema?
-Gemini's `response_mime_type: application/json` with `response_schema` enforces that the model returns exactly the fields we need — no parsing heuristics, no regex extraction. The `follow_up_reason` field acts as a hidden chain-of-thought: by forcing the model to articulate why it's asking a follow-up before generating the reply, the quality of follow-up questions improves significantly.
+Gemini's `response_mime_type: application/json` with `response_schema` enforces that the model returns exactly the fields we need - no parsing heuristics, no regex extraction. The `follow_up_reason` field acts as a hidden chain-of-thought: by forcing the model to articulate why it's asking a follow-up before generating the reply, the quality of follow-up questions improves significantly.
 
 ### Why batch translation at session start?
-Translating per-question at runtime would add ~1s latency before every question. Batch translation at startup costs one API call and stores the results in memory for the session duration. If translation fails, the session falls back to English silently — the interview always continues.
+Translating per-question at runtime would add ~1s latency before every question. Batch translation at startup costs one API call and stores the results in memory for the session duration. If translation fails, the session falls back to English silently - the interview always continues.
 
 ### Why does private_feedback stay in English?
 Recruiter reports need to be consistent across multilingual sessions. A recruiter reviewing a Hindi interview should receive the same feedback format as for an English interview. Forcing `private_feedback` to English in the system prompt ensures HR records remain standardised.
@@ -185,7 +182,7 @@ Edit `qa_dataset.json` to add, remove, or modify questions. No code changes requ
 |-----------|---------|-------------|
 | **STT (Speech-to-Text)** | Google Speech Recognition (free) | **$0.00** |
 | **LLM (Evaluation + Feedback)** | Google Gemini Flash (free tier: 15 RPM, 1M tokens/day) | **$0.00** on free tier |
-| **TTS (Text-to-Speech)** | gTTS — Google Translate TTS (free) | **$0.00** |
+| **TTS (Text-to-Speech)** | gTTS - Google Translate TTS (free) | **$0.00** |
 | **Total** | | **$0.00** (free tier) |
 
 > The free tier of Google AI Studio (Gemini) is sufficient for development and demos.

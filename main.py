@@ -96,7 +96,7 @@ def load_dataset(path: str) -> list:
 def main() -> None:
     
     parser = argparse.ArgumentParser(
-        description="Voice Interview Agent — AI-powered technical screening"
+        description="Voice Interview Agent - AI-powered technical screening"
     )
     parser.add_argument(
         "--lang",
@@ -158,7 +158,7 @@ def main() -> None:
         recognizer = calibrate_microphone()
     else:
         record_and_transcribe = None
-        print("[Text mode active — type your answers when prompted]")
+        print("[Text mode active - type your answers when prompted]")
 
     
     greeting_text = lang_config["greeting"].format(n=n)
@@ -197,13 +197,13 @@ def main() -> None:
 
             
             if follow_up_count >= MAX_FOLLOW_UPS_PER_QUESTION:
-                print(f"[Maximum follow-ups ({MAX_FOLLOW_UPS_PER_QUESTION}) reached — advancing]")
+                print(f"[Maximum follow-ups ({MAX_FOLLOW_UPS_PER_QUESTION}) reached - advancing]")
                 
                 last_score = state.feedback_log[-1]["score"] if state.feedback_log else 2
                 state.feedback_log.append({
                     "question": state.current_question["question"],
                     "score": max(last_score, 1),
-                    "notes": "Maximum follow-ups reached — candidate may need more preparation.",
+                    "notes": "Maximum follow-ups reached - candidate may need more preparation.",
                 })
                 move_to_next = True
                 continue
@@ -220,7 +220,7 @@ def main() -> None:
                 try:
                     raw = input("\n[Type your answer]: ").strip()
                 except EOFError:
-                    print("\n[Input stream closed — ending interview]")
+                    print("\n[Input stream closed - ending interview]")
                     input_closed = True
                     break
 
@@ -253,7 +253,7 @@ def main() -> None:
                 state.feedback_log.append({
                     "question": state.current_question["question"],
                     "score": 1,
-                    "notes": "STT error — response could not be captured.",
+                    "notes": "STT error - response could not be captured.",
                 })
                 move_to_next = True
                 continue
@@ -294,7 +294,7 @@ def main() -> None:
     
     print(
         "\n" + "=" * 52 + "\n"
-        "  INTERVIEW COMPLETE — FINAL FEEDBACK\n"
+        "  INTERVIEW COMPLETE - FINAL FEEDBACK\n"
         + "=" * 52
     )
     print(feedback_text)
