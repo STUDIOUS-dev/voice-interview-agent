@@ -32,5 +32,3 @@ dist/
 build/
 *.egg-info/
 
-# Internal notes (not for version control)
-notes.md
